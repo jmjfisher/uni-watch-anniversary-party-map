@@ -1,0 +1,13 @@
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+#bar {
+    background-color: #fdc526;
+    color: #7a3041;
+}
+
+#map {
+    width: 100%;
+    margin: 0;
+}
