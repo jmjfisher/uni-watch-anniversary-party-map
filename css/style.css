@@ -2,12 +2,35 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+a {
+    color: #fdc526;
+}
+
 #bar {
-    background-color: #fdc526;
-    color: #7a3041;
+    background-color: #7a3041;
+    color: #fdc526;
 }
 
 #map {
     width: 100%;
     margin: 0;
+    z-index: 1;
+}
+
+.fa.fa-navicon {
+    color: #fdc526;
+    margin-top: 5px;
+    width: 30px;
+    vertical-align: middle;
+}
+
+.navbar {
+    -webkit-box-shadow: 0 8px 6px -6px #999;
+    -moz-box-shadow: 0 8px 6px -6px #999;
+    box-shadow: 0 8px 6px -6px #999;
+    z-index: 99;
+}
+
+.leaflet-popup-content p {
+    margin: 0.2em 0;
 }
