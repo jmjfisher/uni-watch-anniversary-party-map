@@ -6,6 +6,7 @@ function initializeMap() {
     var mapHeight = (windowHeight-barHeight)-16;
     
     $('#map').height(mapHeight);
+    $('#map').css({top:(barHeight+16)+'px'});
     
     var map = L.map('map', {
         center: [40.638908, -73.968429],
@@ -18,9 +19,19 @@ function initializeMap() {
         maxZoom: 19
     }).addTo(map);
     
+    var selection = L.control({position: 'topright'});
+    
+    selection.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'selector');
+        div.innerHTML = '<select id="zoom-select"><option>Zoom to...</option></select>';
+        return div;
+    };
+    
+    selection.addTo(map);
+    
     var getURL = 'https://fisherjohnmark.carto.com/api/v2/sql?format=GeoJSON&q=';
     var sql = 'SELECT the_geom, city, location, time FROM fisherjohnmark.uniwatch&api_key=default_public';
-
+/*
     $.getJSON(getURL+sql, function(data){
         
         var features = data.features;
@@ -44,7 +55,7 @@ function initializeMap() {
         setTimeout(flyBounds, 2000)
 
     });
-
+*/
 }; // end initializeMap
 
 function customPoints(feature,latlng) {

@@ -11,12 +11,6 @@ a {
     color: #fdc526;
 }
 
-#map {
-    width: 100%;
-    margin: 0;
-    z-index: 1;
-}
-
 .fa.fa-navicon {
     color: #fdc526;
     margin-top: 5px;
@@ -31,6 +25,24 @@ a {
     z-index: 99;
 }
 
+#map {
+    width: 100%;
+    margin: 0;
+    z-index: 1;
+}
+
 .leaflet-popup-content p {
     margin: 0.2em 0;
+}
+
+#footer {
+    position: fixed;
+    bottom: 5px;
+    z-index: 100;
+}
+
+#logo {
+    width: 90px;
+    height: auto;
+    margin-left: 10px;
 }
