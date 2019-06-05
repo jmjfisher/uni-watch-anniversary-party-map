@@ -10,7 +10,7 @@ function initializeMap() {
     
     var map = L.map('map', {
         center: [40.638908, -73.968429],
-        zoom: 13
+        zoom: 5
     });
     
     var CartoDB_Voyager = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
@@ -23,7 +23,7 @@ function initializeMap() {
     
     selection.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'selector');
-        div.innerHTML = '<select id="zoom-select"><option>Zoom to...</option></select>';
+        div.innerHTML = '<select id="zoom-select"><option value="zoom">Zoom to...</option></select>';
         return div;
     };
     
@@ -31,46 +31,100 @@ function initializeMap() {
     
     var getURL = 'https://fisherjohnmark.carto.com/api/v2/sql?format=GeoJSON&q=';
     var sql = 'SELECT the_geom, city, location, time FROM fisherjohnmark.uniwatch&api_key=default_public';
-/*
+
     $.getJSON(getURL+sql, function(data){
         
         var features = data.features;
         
+        var zoomDict = {};
         var allParties = [];
         
         var parties = L.geoJSON(features, {
+            
             pointToLayer: function (feature, latlng) {
+                
                 allParties.push(latlng);
+                zoomDict[feature.properties.city] = latlng;
                 return customPoints(feature,latlng);
+                
             },
+            
             onEachFeature: partyData
+            
         }).addTo(map);
         
-        var bounds = L.latLngBounds(allParties);
+        var allBounds = L.latLngBounds(allParties);
         
-        function flyBounds(){
-            map.flyToBounds(bounds);
-        };
-        
-        setTimeout(flyBounds, 2000)
+        fillZoomTo(map,zoomDict,allBounds);
 
     });
-*/
+
 }; // end initializeMap
+
+function fillZoomTo(map,zoomDict,allBounds) {
+    
+    var cities = [];
+    
+    for (var city in zoomDict) {
+        cities.push(city);
+    };
+    
+    cities.sort();
+    cities.push("All Parties!");
+    
+    for (var i=0; i<cities.length; i++) {
+        $('#zoom-select').append('<option value="'+cities[i]+'">'+cities[i]+'</option>');
+    }
+    
+    $('#zoom-select').change(function(){
+        
+        if ($('#zoom-select').val() == "All Parties!") {
+            
+            map.flyToBounds(allBounds, {
+                duration: 1
+            });
+            $('#zoom-select').val("zoom")
+            
+        } else {
+            
+            var key = $('#zoom-select').val()
+            coords = zoomDict[key];
+            map.setView(coords,12);
+            $('#zoom-select').val("zoom")
+            
+        };
+    });
+    
+}; // end fillZoomTo
 
 function customPoints(feature,latlng) {
     
-    if (feature.properties.city == "Brooklyn, NY") {
+    if (feature.properties.city == "Brooklyn, NY (HQ)") {
         
-        var greenIcon = L.icon({
-            iconUrl: 'img/confetti.svg',
-            shadowUrl: 'img/confettishadow.svg',
-            iconSize: [38, 95],
-            shadowSize: [40, 97]
-        });
+        var greenMarker = {
+            radius: 7,
+            color: "#156736",
+            fillOpacity: 0.75
+        };
         
-        return L.marker(latlng, {icon: greenIcon});
+        var yelloMarker = {
+            radius: 10,
+            color: "#fdc526",
+            fillOpacity: 0
+        };
         
+        var redMarker = {
+            radius: 13,
+            color: "#7a3041",
+            fillOpacity: 0
+        };
+        
+        var redCircle = L.circleMarker(latlng,redMarker);
+        var yellowCircle = L.circleMarker(latlng,yelloMarker);
+        var greenCircle = L.circleMarker(latlng,greenMarker);
+
+        return L.featureGroup([redCircle,yellowCircle,greenCircle]);
+
     } else {
         
         var partyMarker = {
